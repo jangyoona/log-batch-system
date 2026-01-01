@@ -1,4 +1,4 @@
-package com.board.batch.controller;
+package com.board.batch.user.controller;
 
 
 import org.springframework.stereotype.Controller;
