@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.board.batch.common.mapper.UserMapper">
+
+    <select id="findByUserName" parameterType="String" resultType="UserDto">
+        SELECT
+            id,
+            user_name AS userName,
+            password,
+            created_at AS createdAt,
+            active
+        FROM
+            user
+        WHERE
+            user_name = #{ userName }
+    </select>
+
+    <select id="findRoleByUserName" parameterType="String" resultType="RoleDto">
+        SELECT
+            id,
+            role_name AS roleName,
+            user_name AS userName
+        FROM
+            user_role
+        WHERE
+            user_name = #{ userName }
+    </select>
+
+    <insert id="insertUser" parameterType="UserDto">
+        INSERT INTO user (user_name, password)
+        VALUES (#{ userName }, #{ password })
+    </insert>
+
+    <insert id="insertUserRole" parameterType="RoleDto">
+        INSERT INTO user_role (role_name, user_name)
+        VALUES (#{ roleName }, #{ userName })
+    </insert>
+
+</mapper>
