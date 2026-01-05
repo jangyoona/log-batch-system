@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.board.batch.user.mapper.PostMapper">
+
+    <!-- count query 필요-->
+    <select id="getPosts" parameterType="map" resultType="PostDto">
+        SELECT
+            user_name AS userName,
+            title,
+            content,
+            created_at AS createdAt,
+            active
+        FROM
+            posts
+        WHERE
+            user_name = #{ userName } AND
+            active = true
+        LIMIT #{size} OFFSET #{page}
+    </select>
+
+
+</mapper>
