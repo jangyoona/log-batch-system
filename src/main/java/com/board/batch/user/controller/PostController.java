@@ -25,12 +25,12 @@ public class PostController {
      * 게시판 리스트
      */
     @GetMapping
-    public Model listPosts(Model model) {
+    public String listPosts(Model model) {
 
         List<PostDto> posts = postService.getPosts();
 
         model.addAttribute("posts",posts);
-        return model;
+        return "posts";
     }
 
     /**
@@ -40,6 +40,16 @@ public class PostController {
     public Model detailPost(Model model, Long id) {
 
         model.addAttribute("post","게시글 상세");
+        return model;
+    }
+
+    /**
+     * 게시글 작성 폼
+     */
+    @GetMapping("/new")
+    public Model createPostForm(Model model) {
+
+        model.addAttribute("post","게시글 등록");
         return model;
     }
 
