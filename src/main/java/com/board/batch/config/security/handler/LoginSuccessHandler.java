@@ -29,7 +29,7 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
         session.setAttribute("userRole", userDetails.getRole());
 
         // 개인회원 Home 이동
-        if ("USER".equals(userDetails.getRole())) {
+        if ("ROLE_USER".equals(userDetails.getRole())) {
             response.sendRedirect("/index");
             return;
         }

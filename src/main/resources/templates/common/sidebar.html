@@ -19,11 +19,10 @@
     </li>
     <!-- user -->
     <th:block sec:authorize="hasRole('ROLE_USER')">
-        <li class="nav-item">
-            <a class="nav-link collapsed" th:href="@{/posts}" data-toggle="collapse" data-target="#collapsePages"
-               aria-expanded="true" aria-controls="collapsePages">
-                <i class="fas fa-fw fa-folder"></i>
-                <span>Pages</span>
+        <li class="nav-item" th:classappend="${activeMenu == 'posts'} ? 'active'">
+            <a class="nav-link collapsed" th:href="@{/posts}" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                <i class="fas fa-fw fa-table"></i>
+                <span>board</span>
             </a>
         </li>
     </th:block>

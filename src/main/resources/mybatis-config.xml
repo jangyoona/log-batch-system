@@ -6,12 +6,17 @@
 <configuration>
 
     <typeAliases>
+        <typeAlias type="com.board.batch.common.dto.UserDto" alias="UserDto" />
+        <typeAlias type="com.board.batch.common.dto.RoleDto" alias="RoleDto" />
+
         <typeAlias type="com.board.batch.user.dto.PostDto" alias="PostDto" />
 
     </typeAliases>
 
     <mappers>
-        <mapper resource="mapper/user/PostMapper.xml" />
+        <mapper resource="com/board/batch/mapper/common/UserMapper.xml" />
+
+        <mapper resource="com/board/batch/mapper/user/PostMapper.xml" />
     </mappers>
 
 </configuration>
