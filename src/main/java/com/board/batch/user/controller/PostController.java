@@ -3,13 +3,18 @@ package com.board.batch.user.controller;
 
 import com.board.batch.user.dto.PostDto;
 import com.board.batch.user.service.PostService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,7 +35,7 @@ public class PostController {
         List<PostDto> posts = postService.getPosts();
 
         model.addAttribute("posts",posts);
-        return "posts";
+        return "posts/posts";
     }
 
     /**
@@ -47,20 +52,31 @@ public class PostController {
      * 게시글 작성 폼
      */
     @GetMapping("/new")
-    public Model createPostForm(Model model) {
+    public String createPostForm(Model model) {
 
-        model.addAttribute("post","게시글 등록");
-        return model;
+        return "posts/posts-new";
     }
 
     /**
      * 게시글 작성
      */
     @PostMapping("/new")
-    public Model createPost(Model model) {
+    public ResponseEntity<HttpStatusCode> createPost(HttpSession session, PostDto post, MultipartFile[] attachs) {
 
-        model.addAttribute("post","게시글 등록");
-        return model;
+        Object userName = session.getAttribute("userName");
+
+        if(userName == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        post.setUserName((String) userName);
+
+        int result = postService.insertPost(post, attachs);
+
+        if(result > 0){
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**

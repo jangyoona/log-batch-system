@@ -1,6 +1,7 @@
 package com.board.batch.user.mapper;
 
 
+import com.board.batch.user.dto.PostAttachments;
 import com.board.batch.user.dto.PostDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,6 +11,10 @@ import java.util.List;
 public interface PostMapper {
 
     List<PostDto> getPosts(String userName, int page, int size);
+
+    int insertPost(PostDto postDto);
+
+    int insertPostAttachments(PostAttachments postAttachments);
 
 
 

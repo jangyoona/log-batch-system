@@ -1,0 +1,81 @@
+<!--<html xmlns:th="http://www.thymeleaf.org"-->
+<!--      th:replace="~{common/blank :: layout(title='게시글 작성', content=~{::content}, scripts=~{::scripts})}">-->
+
+<th:block th:replace="~{common/blank :: layout(title='게시글 작성', content=~{::content}, scripts=~{::scripts})}">
+
+    <th:block th:fragment="content">
+        <div class="row">
+            <div class="col-6">
+
+                <!-- Default Card Example -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <label for="title" class="sr-only">제목</label>
+                        <input class="form-control form-control-user" type="text" name="title" id="title" placeholder="제목을 20자 이내로 입력해 주세요."/>
+                    </div>
+                    <div class="card-body">
+                        <textarea class="form-control form-control-user" name="content" id="post-content" placeholder="내용을 2글자 이상 입력해 주세요." maxlength="2000"></textarea>
+                        <!--
+                        This card uses Bootstrap's default styling with no utility classes added. Global
+                        styles are the only things modifying the look and feel of this default card example.
+                        -->
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-icon-split" id="btn-submit">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                        <span class="text">등록</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </th:block>
+    <th:block th:fragment="scripts">
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function() {
+
+                const btnSubmit = document.querySelector("#btn-submit");
+                btnSubmit.addEventListener("click", function(e) {
+                    const title = document.getElementById("title").value.trim();
+                    const content = document.getElementById("post-content").value.trim();
+
+                    if (title.length === 0 || title.length > 20) {
+                        alert("제목은 2자 이상 20자 이내로 입력해 주세요.");
+                        return;
+                    }
+
+                    if (content.length < 2 || content.length > 2000) {
+                        alert("내용은 2자 이상 2000자 이내로 입력해 주세요.");
+                        return;
+                    }
+
+                    const params = new URLSearchParams();
+                    params.append("title", title);
+                    params.append("content", content);
+
+                    fetch("/posts/new", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                        },
+                        body: params.toString(),
+                        credentials: "same-origin"
+                    }).then(function(resp) {
+                        if (resp.status === 200) {
+                            alert("게시글 등록 완료되었습니다.");
+                            location.href = "/posts";
+                        } else if (resp.status === 401) {
+                            alert("로그인이 필요합니다.");
+                            location.href = "/login";
+                        } else {
+                            alert("게시글 등록에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+                        }
+                    }).catch(function(err) {
+                        alert("요청 중 오류가 발생했습니다: " + err);
+                    })
+                });
+            });
+        </script>
+    </th:block>
+</th:block>
+<!--</html>-->

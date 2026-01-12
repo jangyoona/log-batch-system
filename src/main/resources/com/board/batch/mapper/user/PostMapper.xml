@@ -5,21 +5,45 @@
 
 <mapper namespace="com.board.batch.user.mapper.PostMapper">
 
-    <!-- count query 필요-->
-    <select id="getPosts" parameterType="map" resultType="PostDto">
+    <resultMap id="postResultMap" type="PostDto">
+        <result property="userName" column="user_name"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="active" column="active"/>
+    </resultMap>
+
+    <select id="getPostCount" parameterType="string" resultType="int">
         SELECT
-            user_name AS userName,
+            COUNT(*)
+        FROM
+            posts
+        WHERE
+            active = true
+    </select>
+
+    <select id="getPosts" parameterType="map" resultMap="postResultMap">
+        SELECT
+            user_name,
             title,
             content,
-            created_at AS createdAt,
+            created_at,
             active
         FROM
             posts
         WHERE
-            user_name = #{ userName } AND
             active = true
         LIMIT #{size} OFFSET #{page}
     </select>
 
+    <insert id="insertPost" parameterType="PostDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO posts (user_name, title, content)
+        VALUES (#{userName}, #{title}, #{content})
+    </insert>
+
+    <insert id="insertPostAttachments" parameterType="PostAttachmentsDto" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO post_attachments (post_id, origin_name, stored_name)
+        VALUES (#{postId}, #{originName}, #{storedName})
+    </insert>
 
 </mapper>
