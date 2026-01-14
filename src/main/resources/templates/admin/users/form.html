@@ -1,0 +1,73 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(title=${mode=='edit'} ? '관리자 수정' : '관리자 추가', content=~{::content}, scripts=~{::scripts})}">
+
+<th:block th:fragment="content">
+  <section class="card">
+    <div class="card__header">
+      <div>
+        <div class="card__title" th:text="${mode=='edit'} ? '관리자 수정' : '관리자 추가'">관리자 추가</div>
+        <div class="card__sub muted">권한/상태 관리</div>
+      </div>
+      <div class="actions">
+        <a class="btn btn--ghost" th:href="@{/admin/users}">목록</a>
+        <button class="btn btn--primary" type="submit" form="adminForm">저장</button>
+      </div>
+    </div>
+
+    <div class="card__body">
+      <form id="adminForm" class="form"
+            th:action="${mode=='edit'} ? @{|/admin/users/${admin.id}|} : @{/admin/users}"
+            method="post"
+            th:attr="data-mode=${mode}, data-admin-id=${admin?.id}"
+            autocomplete="off">
+
+        <input th:if="${mode=='edit'}" type="hidden" name="_method" value="put"/>
+
+        <div class="form__row">
+          <label class="label" for="username">아이디</label>
+          <input class="input" id="username" name="username"
+                 th:value="${admin?.username}"
+                 th:readonly="${mode=='edit'}"
+                 placeholder="로그인 아이디" required />
+        </div>
+
+        <div class="form__row">
+          <label class="label" for="name">이름</label>
+          <input class="input" id="name" name="name"
+                 th:value="${admin?.name}"
+                 placeholder="표시 이름" required />
+        </div>
+
+        <div class="form__row grid two">
+          <div>
+            <label class="label" for="role">권한</label>
+            <select class="select" id="role" name="role">
+              <option value="ROLE_ADMIN" th:selected="${admin?.role=='ROLE_ADMIN'}">ROLE_ADMIN</option>
+              <option value="ROLE_SUPER" th:selected="${admin?.role=='ROLE_SUPER'}">ROLE_SUPER</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="enabled">상태</label>
+            <select class="select" id="enabled" name="enabled">
+              <option value="true" th:selected="${admin?.enabled}">ENABLED</option>
+              <option value="false" th:selected="${admin != null and !admin.enabled}">DISABLED</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form__row">
+          <label class="label" for="password">비밀번호</label>
+          <input class="input" id="password" name="password" type="password"
+                 placeholder="(수정 시 비우면 유지)" />
+        </div>
+
+        <div class="hint muted">* 기본은 form submit. JSON API가 있으면 JS(fetch)로 SPA처럼 동작합니다.</div>
+      </form>
+    </div>
+  </section>
+</th:block>
+
+<th:block th:fragment="scripts">
+  <script defer th:src="@{/assets/js/admin-users.js}"></script>
+</th:block>
+</html>

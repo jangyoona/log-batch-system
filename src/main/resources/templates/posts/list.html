@@ -1,0 +1,102 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(title='게시글 목록', content=~{::content}, scripts=~{::scripts})}">
+
+<th:block th:fragment="content">
+    <section class="card">
+        <div class="card__header">
+            <div>
+                <div class="card__title">게시글 목록</div>
+                <div class="card__sub muted">검색 · 정렬 · 페이징</div>
+            </div>
+            <div class="actions">
+                <a class="btn btn--primary" th:href="@{/posts/new}">+ 글쓰기</a>
+            </div>
+        </div>
+
+        <div class="card__body">
+            <!-- 검색/정렬 -->
+            <form class="toolbar" th:action="@{/posts}" method="get">
+                <input class="input" type="search" name="q" placeholder="제목/작성자 검색"
+                       th:value="${param.q}" />
+
+                <select class="select" name="sort" style="max-width:220px;">
+                    <option value="recent" th:selected="${param.sort == null or param.sort[0] == 'recent'}">최신순</option>
+                    <option value="views" th:selected="${param.sort != null and param.sort[0] == 'views'}">조회순</option>
+                </select>
+
+                <select class="select" name="size" style="max-width:160px;">
+                    <option value="10" th:selected="${param.size == null or param.size[0] == '10'}">10개</option>
+                    <option value="20" th:selected="${param.size != null and param.size[0] == '20'}">20개</option>
+                    <option value="50" th:selected="${param.size != null and param.size[0] == '50'}">50개</option>
+                </select>
+
+                <button class="btn btn--ghost" type="submit">조회</button>
+                <button class="btn btn--ghost" type="button" data-posts-refresh>AJAX 조회</button>
+            </form>
+
+            <!-- 목록 -->
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th style="width:90px;">ID</th>
+                        <th>제목</th>
+                        <th style="width:160px;">작성자</th>
+                        <th style="width:120px;">상태</th>
+                        <th style="width:140px;">조회</th>
+                        <th style="width:190px;">작성일</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="postsTbody">
+                    <!-- 서버 렌더링(기본 동작) -->
+                    <tr th:each="p : ${posts}">
+                        <td th:text="${p.id}">1</td>
+                        <td>
+                            <a class="link" th:href="@{|/posts/${p.id}|}" th:text="${p.title}">제목</a>
+                            <div class="muted" style="font-size:12px; margin-top:4px;"
+                                 th:text="${#strings.abbreviate(p.content, 80)}">내용 일부</div>
+                        </td>
+                        <td th:text="${p.author}">작성자</td>
+                        <td><span class="badge" th:text="${p.status}">NORMAL</span></td>
+                        <td th:text="${p.viewCount}">0</td>
+                        <td th:text="${p.createdAt != null ? #temporals.format(p.createdAt,'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                    </tr>
+
+                    <!-- 비어있을 때 -->
+                    <tr th:if="${posts == null or #lists.isEmpty(posts)}">
+                        <td colspan="6" class="muted">게시글이 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이징 -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px; flex-wrap:wrap;">
+                <div class="muted" style="font-size:12px;">
+                    <span th:text="'총 ' + ${totalElements} + '건'">총 0건</span>
+                    <span th:if="${totalPages != null}" th:text="' · ' + (${page}+1) + ' / ' + ${totalPages} + ' 페이지'"></span>
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <a class="btn btn--ghost btn--sm"
+                       th:classappend="${page == 0} ? ' is-disabled' : ''"
+                       th:href="@{/posts(page=${page-1}, q=${param.q}, sort=${param.sort}, size=${param.size})}">이전</a>
+
+                    <a class="btn btn--ghost btn--sm"
+                       th:classappend="${totalPages != null and page >= totalPages-1} ? ' is-disabled' : ''"
+                       th:href="@{/posts(page=${page+1}, q=${param.q}, sort=${param.sort}, size=${param.size})}">다음</a>
+                </div>
+            </div>
+
+            <div class="hint muted">
+                * 기본은 SSR(폼 조회/링크 이동). API가 있으면 “AJAX 조회” 버튼으로 SPA 느낌도 가능.
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment="scripts">
+    <script defer th:src="@{/assets/js/posts-list.js}"></script>
+</th:block>
+</html>

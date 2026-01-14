@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(title, content, scripts)">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="${title}">Board Admin</title>
+
+  <!-- CSRF (Spring Security 사용 시 자동 채움) -->
+  <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}"/>
+  <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : ''}"/>
+
+  <link rel="stylesheet" th:href="@{/assets/css/app.css}" />
+  <!-- Chart.js (대시보드 차트용) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script defer th:src="@{/assets/js/app.js}"></script>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand__logo" aria-hidden="true">◆</div>
+      <div class="brand__text">
+        <div class="brand__title">Board</div>
+        <div class="brand__sub">Spring Boot · Thymeleaf</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <!-- 실제 프로젝트에 맞게 링크만 바꾸면 됨 -->
+      <a class="nav__item" th:href="@{/posts/1}" data-nav>
+        <span class="nav__icon" aria-hidden="true">📝</span> 게시글 조회
+      </a>
+      <a class="nav__item" th:href="@{/posts/new}" data-nav>
+        <span class="nav__icon" aria-hidden="true">➕</span> 게시글 등록
+      </a>
+
+      <div class="nav__divider"></div>
+
+      <!-- 관리자 영역(서버에서 권한 보고 숨기려면 th:if 추가) -->
+      <a class="nav__item" th:href="@{/admin/batch/status}" data-nav>
+        <span class="nav__icon" aria-hidden="true">⏱️</span> 배치 상태
+      </a>
+      <a class="nav__item" th:href="@{/admin/batch/dashboard}" data-nav>
+        <span class="nav__icon" aria-hidden="true">📊</span> 배치 대시보드
+      </a>
+      <a class="nav__item" th:href="@{/admin/users}" data-nav>
+        <span class="nav__icon" aria-hidden="true">🛡️</span> 관리자 관리
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="btn btn--ghost" type="button" data-theme-toggle>
+        🌙 / ☀️ 테마
+      </button>
+
+      <!-- Logout (Spring Security 기본: POST /logout + CSRF 필요) -->
+      <form th:action="@{/logout}" method="post" class="sidebar__logout">
+        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button class="btn btn--danger" type="submit">
+          ⎋ 로그아웃
+        </button>
+      </form>
+
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar__left">
+        <button class="icon-btn" type="button" data-sidebar-toggle aria-label="메뉴 열기">☰</button>
+        <div class="crumb">
+          <span class="crumb__title" th:text="${title}">Title</span>
+        </div>
+      </div>
+
+      <div class="topbar__right">
+        <div class="chip" th:text="${#strings.defaultString(currentUser,'guest')}">guest</div>
+      </div>
+    </header>
+
+    <section class="content" th:insert="${content}">
+      <!-- page content -->
+    </section>
+
+    <footer class="footer">
+      <span>© Board UI</span>
+      <span class="muted">Minimal SPA-like MPA</span>
+    </footer>
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast-wrap" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Confirm Modal -->
+<div class="modal" hidden data-modal>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-label="확인">
+    <div class="modal__header">
+      <div class="modal__title" data-modal-title>확인</div>
+      <button class="icon-btn" type="button" data-modal-close aria-label="닫기">✕</button>
+    </div>
+    <div class="modal__body" data-modal-body>정말 진행할까요?</div>
+    <div class="modal__footer">
+      <button class="btn btn--ghost" type="button" data-modal-close>취소</button>
+      <button class="btn btn--danger" type="button" data-modal-ok>확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- page scripts -->
+<th:block th:insert="${scripts}"></th:block>
+</body>
+</html>

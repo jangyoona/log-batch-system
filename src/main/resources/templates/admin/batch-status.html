@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(title='배치 상태 조회', content=~{::content}, scripts=~{::scripts})}">
+
+<th:block th:fragment="content">
+  <section class="card">
+    <div class="card__header">
+      <div>
+        <div class="card__title">배치 상태</div>
+        <div class="card__sub muted">최근 실행/성공/실패 로그 요약</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn--ghost" type="button" data-batch-refresh>새로고침</button>
+      </div>
+    </div>
+
+    <div class="card__body">
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>JOB</th>
+            <th>상태</th>
+            <th>최근 실행</th>
+            <th>소요(ms)</th>
+            <th>메시지</th>
+          </tr>
+          </thead>
+          <tbody id="batchStatusBody">
+          <tr th:each="row : ${batchRows}">
+            <td th:text="${row.jobName}">postBatch</td>
+            <td><span class="badge" th:text="${row.status}">SUCCESS</span></td>
+            <td th:text="${row.lastRunAt != null ? #temporals.format(row.lastRunAt,'yyyy-MM-dd HH:mm') : '-'}">-</td>
+            <td th:text="${row.durationMs}">0</td>
+            <td class="muted" th:text="${row.message}">-</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hint muted">
+        * SSR만으로도 표시됩니다. 버튼을 API(fetch)로 연결하면 새로고침이 더 빠르게 됩니다.
+      </div>
+    </div>
+  </section>
+</th:block>
+
+<th:block th:fragment="scripts">
+  <script defer th:src="@{/assets/js/admin-batch.js}"></script>
+</th:block>
+</html>

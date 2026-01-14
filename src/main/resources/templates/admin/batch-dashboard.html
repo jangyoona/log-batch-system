@@ -1,0 +1,48 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(title='배치 대시보드', content=~{::content}, scripts=~{::scripts})}">
+
+<th:block th:fragment="content">
+  <div class="grid two">
+    <section class="card">
+      <div class="card__header">
+        <div>
+          <div class="card__title">성공/실패 추이</div>
+          <div class="card__sub muted">최근 N일</div>
+        </div>
+        <div class="actions">
+          <button class="btn btn--ghost" type="button" data-dashboard-refresh>새로고침</button>
+        </div>
+      </div>
+      <div class="card__body">
+        <canvas id="chartTrend" height="120"></canvas>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card__header">
+        <div>
+          <div class="card__title">JOB별 평균 소요</div>
+          <div class="card__sub muted">ms</div>
+        </div>
+      </div>
+      <div class="card__body">
+        <canvas id="chartDuration" height="120"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <script th:inline="javascript">
+    window.__BATCH_DASHBOARD__ = {
+      trendLabels: [[${trendLabels}]],
+      trendSuccess: [[${trendSuccess}]],
+      trendFail: [[${trendFail}]],
+      durationLabels: [[${durationLabels}]],
+      durationValues: [[${durationValues}]]
+    };
+  </script>
+</th:block>
+
+<th:block th:fragment="scripts">
+  <script defer th:src="@{/assets/js/admin-batch.js}"></script>
+</th:block>
+</html>
