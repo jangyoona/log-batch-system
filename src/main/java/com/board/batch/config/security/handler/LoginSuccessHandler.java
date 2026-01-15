@@ -30,12 +30,12 @@ public class LoginSuccessHandler  implements AuthenticationSuccessHandler {
 
         // 개인회원 Home 이동
         if ("ROLE_USER".equals(userDetails.getRole())) {
-            response.sendRedirect("/index");
+            response.sendRedirect("/posts");
             return;
         }
 
         // 관리자 Home 이동
-        response.sendRedirect("/admin/index");
+        response.sendRedirect("/admin/dashboard");
     }
 
     @Override

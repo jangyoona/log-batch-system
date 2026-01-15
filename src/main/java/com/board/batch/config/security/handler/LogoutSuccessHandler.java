@@ -22,6 +22,6 @@ public class LogoutSuccessHandler implements org.springframework.security.web.au
             session.invalidate();
         }
 
-        response.sendRedirect("/login");
+        response.sendRedirect("/login?logout=1");
     }
 }

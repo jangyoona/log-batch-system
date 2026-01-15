@@ -28,42 +28,40 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                )
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable);
-
+                // 개발
 //                .csrf(AbstractHttpConfigurer::disable)
-////                .cors(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests((authorize) -> authorize
-////                        .requestMatchers("/static/**").permitAll()
-//                        .requestMatchers("/static/**", "/css/**", "/img/**", "/js/**", "/scss/**", "/vendor/**").permitAll()
-//                        .requestMatchers("/login", "/register","/login/denied").permitAll()
-//
-//                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/posts/new", "/posts/*/edit", "/posts/*/delete").hasAnyRole("USER", "ADMIN")
-//                        .anyRequest().authenticated()) // 그 외 모든 비허용
-//                .exceptionHandling(configurer -> configurer.accessDeniedHandler(accessDeniedHandler())) // 권한 부족시 error 페이지로 이동
-//                .httpBasic(AbstractHttpConfigurer::disable)
-//                .userDetailsService(webUserDetailsService)
-//                .formLogin((login) -> login
-//                        .loginPage("/login") // form
-//                        .loginProcessingUrl("/login") // 호출 action
-//                        .successHandler(loginSuccessHandler)
-//                        .failureUrl("/login?error=1")
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll()
 //                )
-//                .sessionManagement((session) -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                        .invalidSessionUrl("/login")
-//                )
-//
-//                .logout((logout) -> logout
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessHandler(logoutSuccessHandler)
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID"));
+//                .formLogin(AbstractHttpConfigurer::disable)
+//                .httpBasic(AbstractHttpConfigurer::disable);
+
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/static/**", "/assets/**").permitAll()
+                        .requestMatchers("/login", "/register","/login/denied").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/posts/new", "/posts/*/edit", "/posts/*/delete").hasAnyRole("USER", "ADMIN")
+                        .anyRequest().authenticated()) // 그 외 모든 비허용
+                .exceptionHandling(configurer -> configurer.accessDeniedHandler(accessDeniedHandler())) // 권한 부족시 error 페이지로 이동
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .userDetailsService(webUserDetailsService)
+                .formLogin((login) -> login
+                        .loginPage("/login") // form
+                        .loginProcessingUrl("/login") // 호출 action
+                        .successHandler(loginSuccessHandler)
+                        .failureUrl("/login?error=1")
+                )
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .invalidSessionUrl("/login")
+                )
+
+                .logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"));
         // remember-me
 //        http.rememberMe( rememberMe -> rememberMe
 //                .key(rememberMeKey)

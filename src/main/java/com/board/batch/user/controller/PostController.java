@@ -34,8 +34,13 @@ public class PostController {
 
         List<PostDto> posts = postService.getPosts();
 
+        // pageVo 만들기
+        model.addAttribute("page", 1);
+        model.addAttribute("totalPages", 10);
+        model.addAttribute("totalElements", 1);
+
         model.addAttribute("posts",posts);
-        return "posts/posts";
+        return "posts/list";
     }
 
     /**
