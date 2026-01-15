@@ -11,12 +11,28 @@
         }
     });
 
-    // URL에 error 파라미터 있으면 토스트
+    // login result
     const url = new URL(location.href);
     if (url.searchParams.has("error")) {
-        toast("로그인 실패", "아이디/비밀번호를 확인해 주세요.");
+        login_toast("alert--danger", "로그인 실패", "아이디/비밀번호를 확인해 주세요.");
     }
     if (url.searchParams.has("logout")) {
-        toast("로그아웃", "정상적으로 로그아웃 되었습니다.");
+        login_toast("alert--ok", "로그아웃", "정상적으로 로그아웃 되었습니다.");
     }
+
+    // login result toast
+    function login_toast(className, title, msg) {
+        const wraps = document.getElementsByClassName(className);
+        if (!wraps) return;
+
+        for (let wrap of wraps) {
+            wrap.style.display = "block";
+
+            setTimeout(() => {
+                wrap.style.display = "none";
+            }, 2800);
+        }
+    }
+    window.toast = toast;
+
 })();
