@@ -2,59 +2,65 @@
       th:replace="~{common/layout :: layout(title='게시글 조회', content=~{::content}, scripts=~{::scripts})}">
 
 <th:block th:fragment="content">
-  <div class="grid two">
-    <section class="card">
-      <div class="card__header">
-        <div>
-          <div class="card__title" th:text="${post.title}">제목</div>
-          <div class="card__sub muted">
-            <span th:text="${post.author}">작성자</span> ·
-            <span th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}">2026-01-01</span> ·
-            조회 <span th:text="${post.viewCount}">0</span>
-          </div>
-        </div>
-        <div class="actions">
-          <a class="btn btn--ghost" th:href="@{|/posts/${post.id}/edit|}">수정</a>
+    <!--  <th:block th:if="${post != null}">-->
+    <div class="grid two" th:if="${post != null}">
+        <section class="card">
+            <div class="card__header">
+                <div>
+                    <div class="card__title" th:text="${post.title}">제목</div>
+                    <div class="card__sub muted">
+                        <span th:text="${post.userName}">작성자</span> ·
+                        <span th:text="${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}">2026-01-01</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a class="btn btn--ghost" th:href="@{|/posts/${post.id}/edit?mode=edit|}">수정</a>
 
-          <!-- 기본 동작: POST + _method=DELETE (Spring MVC HiddenHttpMethodFilter 사용 시) -->
-          <form th:action="@{|/posts/${post.id}|}" method="post" style="display:inline;">
-            <input type="hidden" name="_method" value="delete"/>
-            <button class="btn btn--danger" type="submit"
-                    th:attr="data-delete-post-id=${post.id}">
-              삭제
-            </button>
-          </form>
-        </div>
-      </div>
+                    <!-- 기본 동작: POST + _method=DELETE (Spring MVC HiddenHttpMethodFilter 사용 시) -->
+                    <form th:action="@{|/posts/${post.id}|}" method="post" style="display:inline;">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button class="btn btn--danger" type="submit"
+                                th:attr="data-delete-post-id=${post.id}">
+                            삭제
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-      <div class="card__body prose">
-        <pre class="prelike" th:text="${post.content}">내용</pre>
-      </div>
+            <div class="card__body prose">
+                <pre class="prelike" th:text="${post.content}">내용</pre>
+            </div>
 
-      <div class="card__footer">
-        <a class="link" th:href="@{/posts/new}">+ 새 글 작성</a>
-      </div>
-    </section>
+            <div class="card__footer">
+                <a class="link" th:href="@{/posts/new}">+ 새 글 작성</a>
+            </div>
+        </section>
 
-    <aside class="card">
-      <div class="card__header">
-        <div class="card__title">메타 정보</div>
-      </div>
-      <div class="card__body">
-        <div class="kv">
-          <div class="kv__row"><div class="kv__k">ID</div><div class="kv__v" th:text="${post.id}">1</div></div>
-          <div class="kv__row"><div class="kv__k">상태</div><div class="kv__v"><span class="badge" th:text="${post.status}">NORMAL</span></div></div>
-          <div class="kv__row"><div class="kv__k">태그</div><div class="kv__v" th:text="${post.tags}">-</div></div>
-        </div>
-        <div class="hint muted">
-          * JS(fetch) API가 있으면 비동기로 동작하고, 없으면 기본 form submit으로도 동작합니다.
-        </div>
-      </div>
-    </aside>
-  </div>
+        <aside class="card">
+            <div class="card__header">
+                <div class="card__title">메타 정보</div>
+            </div>
+            <div class="card__body">
+                <div class="kv">
+                    <div class="kv__row"><div class="kv__k">ID</div><div class="kv__v" th:text="${post.id}">1</div></div>
+                    <div class="kv__row"><div class="kv__k">상태</div><div class="kv__v"><span class="badge" th:text="${post.active}">NORMAL</span></div></div>
+                </div>
+                <div class="hint muted">
+                    * JS(fetch) API가 있으면 비동기로 동작하고, 없으면 기본 form submit으로도 동작합니다.
+                </div>
+            </div>
+        </aside>
+    </div>
+    <!--  </th:block>-->
 </th:block>
 
 <th:block th:fragment="scripts">
-  <script defer th:src="@{/assets/js/posts.js}"></script>
+    <script defer th:src="@{/assets/js/posts.js}"></script>
+    <script th:inline="javascript">
+        if (![[${post}]]) {
+            alert("게시글 정보가 없습니다.");
+            location.href = "/posts";
+        };
+    </script>
 </th:block>
 </html>

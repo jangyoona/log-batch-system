@@ -1,6 +1,7 @@
 package com.board.batch.user.mapper;
 
 
+import com.board.batch.common.dto.SearchCondition;
 import com.board.batch.user.dto.PostAttachments;
 import com.board.batch.user.dto.PostDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,7 +11,11 @@ import java.util.List;
 @Mapper
 public interface PostMapper {
 
-    List<PostDto> getPosts(String userName, int page, int size);
+    int getPostCount(SearchCondition searchReq);
+
+    List<PostDto> getPosts(SearchCondition searchReq);
+
+    PostDto getPostById(Long id);
 
     int insertPost(PostDto postDto);
 

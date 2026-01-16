@@ -11,6 +11,7 @@
 
         <typeAlias type="com.board.batch.user.dto.PostDto" alias="PostDto" />
         <typeAlias type="com.board.batch.user.dto.PostAttachments" alias="PostAttachmentsDto" />
+        <typeAlias type="com.board.batch.common.dto.SearchCondition" alias="SearchCondition" />
 
     </typeAliases>
 

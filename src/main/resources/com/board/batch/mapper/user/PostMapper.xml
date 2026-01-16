@@ -6,6 +6,7 @@
 <mapper namespace="com.board.batch.user.mapper.PostMapper">
 
     <resultMap id="postResultMap" type="PostDto">
+        <result property="id" column="id"/>
         <result property="userName" column="user_name"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
@@ -13,17 +14,25 @@
         <result property="active" column="active"/>
     </resultMap>
 
-    <select id="getPostCount" parameterType="string" resultType="int">
+    <select id="getPostCount" parameterType="SearchCondition" resultType="int">
         SELECT
             COUNT(*)
         FROM
             posts
         WHERE
-            active = true
+            1=1
+            AND active = true
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    title LIKE CONCAT('%', #{keyword}, '%')
+                    OR user_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
     </select>
 
-    <select id="getPosts" parameterType="map" resultMap="postResultMap">
+    <select id="getPosts" parameterType="SearchCondition" resultMap="postResultMap">
         SELECT
+            id,
             user_name,
             title,
             content,
@@ -32,8 +41,41 @@
         FROM
             posts
         WHERE
-            active = true
+            1=1
+            AND active = true
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    title LIKE CONCAT('%', #{keyword}, '%')
+                    OR user_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        <choose>
+            <when test="sort != null and sort == 'recent'">
+                ORDER BY created_at DESC
+            </when>
+            <when test="sort != null and sort == 'oldest'">
+                ORDER BY created_at ASC
+            </when>
+            <otherwise>
+                ORDER BY created_at DESC
+            </otherwise>
+        </choose>
         LIMIT #{size} OFFSET #{page}
+    </select>
+
+    <select id="getPostById" parameterType="long" resultMap="postResultMap">
+        SELECT
+            id,
+            user_name,
+            title,
+            content,
+            created_at,
+            active
+        FROM
+            posts
+        WHERE
+            id = #{id}
+            AND active = true
     </select>
 
     <insert id="insertPost" parameterType="PostDto" useGeneratedKeys="true" keyProperty="id">

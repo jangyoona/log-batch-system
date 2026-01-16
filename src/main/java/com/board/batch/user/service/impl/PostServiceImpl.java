@@ -1,5 +1,6 @@
 package com.board.batch.user.service.impl;
 
+import com.board.batch.common.dto.SearchCondition;
 import com.board.batch.user.dto.PostAttachments;
 import com.board.batch.user.dto.PostDto;
 import com.board.batch.user.mapper.PostMapper;
@@ -28,8 +29,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getPosts() {
-        return List.of();
+    public List<PostDto> getPosts(SearchCondition searchReq) {
+        int count = postMapper.getPostCount(searchReq);
+        searchReq.init(count);
+
+        return postMapper.getPosts(searchReq);
+    }
+
+    @Override
+    public PostDto getPostById(Long id) {
+        return postMapper.getPostById(id);
     }
 
     @Override

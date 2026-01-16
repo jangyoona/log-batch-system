@@ -40,11 +40,11 @@
 
       // 필수값 체크는 공통
       const title = form.title.value.trim();
-      const author = form.author.value.trim();
+      const userName = form.userName.value.trim();
       const content = form.content.value.trim();
-      if (!title || !author || !content) {
+      if (!title || !userName || !content) {
         e.preventDefault();
-        toast("입력 확인", "제목/작성자/내용은 필수입니다.");
+        toast("입력 확인", "제목/내용은 필수입니다.");
         return;
       }
 
@@ -54,15 +54,14 @@
 
       const payload = {
         title,
-        author,
+        userName,
         content,
-        status: form.status.value,
-        tags: form.tags.value.trim()
+        status: form.active.value
       };
 
       try {
         if (mode === "edit" && id) {
-          await api(`/posts/${id}`, { method: "PUT", body: payload });
+          await api(`/posts/${id}`, { method: "POST", body: payload });
           toast("저장 완료", "수정이 반영되었습니다.");
           location.href = `/posts/${id}`;
         } else {

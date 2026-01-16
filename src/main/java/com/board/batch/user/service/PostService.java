@@ -1,5 +1,6 @@
 package com.board.batch.user.service;
 
+import com.board.batch.common.dto.SearchCondition;
 import com.board.batch.user.dto.PostDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -7,7 +8,9 @@ import java.util.List;
 
 public interface PostService {
 
-    List<PostDto> getPosts();
+    List<PostDto> getPosts(SearchCondition searchReq);
+
+    PostDto getPostById(Long id);
 
     int insertPost(PostDto postDto, MultipartFile[] attachs);
 }
