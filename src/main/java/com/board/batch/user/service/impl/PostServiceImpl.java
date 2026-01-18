@@ -43,7 +43,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public int insertPost(PostDto postDto, MultipartFile[] attachs) {
+    public long insertPost(PostDto postDto, MultipartFile[] attachs) {
 
         int rows = postMapper.insertPost(postDto);
 
@@ -86,6 +86,20 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+        return postId;
+    }
+
+    @Override
+    public int editPost(PostDto postDto, MultipartFile[] attachs) {
+        int rows = postMapper.updatePost(postDto);
+        // 나중에 파일 삭제 및 업로드 추가 예정
+        return rows;
+    }
+
+    @Override
+    public int deletePost(long id) {
+        int rows = postMapper.deletePost(id);
+        // 나중에 파일 삭제 및 업로드 추가 예정
         return rows;
     }
 }

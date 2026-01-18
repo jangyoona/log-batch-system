@@ -12,5 +12,9 @@ public interface PostService {
 
     PostDto getPostById(Long id);
 
-    int insertPost(PostDto postDto, MultipartFile[] attachs);
+    long insertPost(PostDto postDto, MultipartFile[] attachs);
+
+    int editPost(PostDto postDto, MultipartFile[] attachs);
+
+    int deletePost(long id);
 }

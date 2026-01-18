@@ -21,6 +21,10 @@ public interface PostMapper {
 
     int insertPostAttachments(PostAttachments postAttachments);
 
+    int updatePost(PostDto postDto);
+
+    int deletePost(long id);
+
 
 
 }

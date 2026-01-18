@@ -51,7 +51,7 @@
                     <tbody id="postsTbody">
                     <!-- 서버 렌더링(기본 동작) -->
                     <tr th:each="post, stat : ${posts}">
-                        <td th:data-id="${post.id}" th:text="${stat.index+1}"></td>
+                        <td th:data-id="${post.id}" th:text="${(searchReq.page ?: 0) * (searchReq.size ?: 10) + stat.index + 1}"></td>
                         <td>
                             <a class="link" th:href="@{|/posts/${post.id}|}" th:text="${post.title}">제목</a>
                         </td>
@@ -71,18 +71,18 @@
             <!-- 페이징 -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px; flex-wrap:wrap;">
                 <div class="muted" style="font-size:12px;">
-                    <span th:text="'총 ' + ${totalElements} + '건'">총 0건</span>
-                    <span th:if="${totalPages != null}" th:text="' · ' + (${page}+1) + ' / ' + ${totalPages} + ' 페이지'"></span>
+                    <span th:text="'총 ' + ${searchReq.totalElements} + '건'">총 0건</span>
+                    <span th:if="${searchReq.totalPages != null}" th:text="' · ' + (${searchReq.page}+1) + ' / ' + ${searchReq.totalPages} + ' 페이지'"></span>
                 </div>
 
                 <div style="display:flex; gap:8px; align-items:center;">
                     <a class="btn btn--ghost btn--sm"
-                       th:classappend="${page == 0} ? ' is-disabled' : ''"
-                       th:href="@{/posts(page=${page-1}, keyword=${param.keyword}, sort=${param.sort}, size=${param.size})}">이전</a>
+                       th:classappend="${searchReq.page == 0} ? ' is-disabled' : ''"
+                       th:href="@{/posts(page=${searchReq.page-1}, keyword=${param.keyword}, sort=${param.sort}, size=${param.size})}">이전</a>
 
                     <a class="btn btn--ghost btn--sm"
-                       th:classappend="${totalPages != null and page >= totalPages-1} ? ' is-disabled' : ''"
-                       th:href="@{/posts(page=${page+1}, keyword=${param.keyword}, sort=${param.sort}, size=${param.size})}">다음</a>
+                       th:classappend="${searchReq.totalPages != null and searchReq.page >= searchReq.totalPages-1} ? ' is-disabled' : ''"
+                       th:href="@{/posts(page=${searchReq.page+1}, keyword=${param.keyword}, sort=${param.sort}, size=${param.size})}">다음</a>
                 </div>
             </div>
 
