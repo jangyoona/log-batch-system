@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: log-batch-system
+  main:
+    allow-bean-definition-overriding: true
 
   config:
     import: "optional:file:.env[.properties]"
