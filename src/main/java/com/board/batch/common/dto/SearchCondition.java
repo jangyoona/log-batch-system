@@ -3,9 +3,11 @@ package com.board.batch.common.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class SearchCondition {
 
     private String keyword;
