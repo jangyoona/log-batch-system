@@ -8,7 +8,7 @@
                 <div class="card__title" th:text="${mode=='edit'} ? '게시글 수정' : '게시글 등록'">게시글 등록</div>
             </div>
             <div class="actions">
-                <a class="btn btn--ghost" th:href="${mode=='edit'} ? @{|/posts/${post.id}|} : @{/posts/1}">취소</a>
+                <a class="btn btn--ghost" th:href="${mode=='edit'} ? @{|/posts/${post.id}|} : @{/posts}">취소</a>
                 <button class="btn btn--primary" type="submit" form="postForm">저장</button>
             </div>
         </div>
