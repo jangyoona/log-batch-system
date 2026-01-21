@@ -11,9 +11,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -33,30 +34,40 @@ public class RequestLoggingAspect {
     @Around("execution(* com.board.batch..controller..*(..))")
     public Object logRequestResponse(org.aspectj.lang.ProceedingJoinPoint joinPoint) throws Throwable {
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String userName = "GUEST";
+        if (auth != null && auth.isAuthenticated()) {
+            Object principal = auth.getPrincipal();
+
+            if (principal instanceof UserDetails userDetails) {
+                userName = userDetails.getUsername();
+            }
+        }
+
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
-
-        String userId = getUserIdFromSession(session);
-
-
         String method = request.getMethod();
         String uri = request.getRequestURI();
         String queryString = request.getQueryString();
 
 
         Object[] args = joinPoint.getArgs();
-        String requestBodyJson = getRequestBodyJson(args);
 
-
-        log.info("########## [REQUEST] {} {}{} | User: {}",
+        log.info("########## [REQUEST] {} {}{} | User: {} ##########",
                 method,
                 uri,
                 (queryString != null && !queryString.isEmpty()) ? "?" + queryString : "",
-                userId
+                userName
         );
-        if (!requestBodyJson.isEmpty()) {
-            log.info("{}", requestBodyJson);
+
+        String requestBodyJson = "";
+        if ("POST".equals(method)) {
+            requestBodyJson = getRequestBodyJson(args);
+
+            if (!requestBodyJson.isEmpty()) {
+                log.info("{}", requestBodyJson);
+            }
         }
 
 
@@ -70,16 +81,14 @@ public class RequestLoggingAspect {
             int responseCode = entity.getStatusCode().value();
 
             if (responseCode >= 400) {
-                log.error("[RESPONSE] {} {} | User: {}, Status: {}, Data: {} ##########",
-                        method, uri, userId, responseCode, body);
+                log.error("########## [RESPONSE] {} {} | User: {}, Status: {}, Data: {} ##########",
+                        method, uri, userName, responseCode, body);
             } else {
-                log.info("[RESPONSE] {} {} | User: {}, Status: {}, Data: {} ##########",
-                        method, uri, userId, responseCode, body);
+                log.info("########## [RESPONSE] {} {} | User: {}, Status: {}, Data: {} ##########",
+                        method, uri, userName, responseCode, body);
             }
         }
         return result;
-
-
     }
 
 
@@ -130,15 +139,4 @@ public class RequestLoggingAspect {
             return bodyValues.stream().map(Object::toString).collect(Collectors.joining(", "));
         }
     }
-
-    private String getUserIdFromSession(HttpSession session) {
-        Object userNameObj = session.getAttribute("userName");
-        if (userNameObj != null) {
-            return (String) userNameObj;
-        } else {
-            return null;
-        }
-    }
-
-
 }
