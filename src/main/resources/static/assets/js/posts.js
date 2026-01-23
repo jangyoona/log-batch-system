@@ -20,9 +20,9 @@
             onOk: async () => {
                 // JSON API가 있으면 비동기, 없으면 form submit
                 try {
-                    await api(`/posts/${id}`, { method: "DELETE" });
+                    await api(`/posts/${id}/delete`, { method: "DELETE" });
                     toast("삭제 완료", `게시글 #${id} 삭제됨`);
-                    location.href = "/posts/new";
+                    location.href = "/posts";
                 } catch (err) {
                     // API 없거나 실패 시: 서버 form submit로 삭제 처리
                     form.submit();
