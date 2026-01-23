@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  log-batch:
+    build: .
+    image: log-batch:latest
+    container_name: log-batch
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env
+    restart: always
