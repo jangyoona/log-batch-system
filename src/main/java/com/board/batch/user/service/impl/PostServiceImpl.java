@@ -1,10 +1,16 @@
 package com.board.batch.user.service.impl;
 
+import com.board.batch.common.dto.ActionType;
+import com.board.batch.common.dto.BatchStatus;
 import com.board.batch.common.dto.SearchCondition;
+import com.board.batch.user.dto.PostActionLogDto;
 import com.board.batch.user.dto.PostAttachments;
 import com.board.batch.user.dto.PostDto;
 import com.board.batch.user.mapper.PostMapper;
+import com.board.batch.user.service.PostActionLogService;
 import com.board.batch.user.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,16 +23,14 @@ import java.util.UUID;
 
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
+    private final PostActionLogService postActionLogService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-
-    public PostServiceImpl(PostMapper postMapper) {
-        this.postMapper = postMapper;
-    }
 
     @Override
     public List<PostDto> getPosts(SearchCondition searchReq) {
@@ -43,7 +47,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public long insertPost(PostDto postDto, MultipartFile[] attachs) {
+    public long createPost(PostDto postDto, MultipartFile[] attachs, HttpServletRequest request) {
 
         int rows = postMapper.insertPost(postDto);
 
@@ -86,20 +90,60 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+        // 로그 저장
+        PostActionLogDto postActionLog = PostActionLogDto.builder()
+                        .postId(postId)
+                        .userId(postDto.getUserId())
+                        .actionType(ActionType.CREATE)
+                        .ipAddress(request.getRemoteAddr())
+                        .userAgent(request.getHeader("User-Agent"))
+                        .status(BatchStatus.PENDING)
+                        .build();
+
+        postActionLogService.recordPostAction(postActionLog);
+
         return postId;
     }
 
     @Override
-    public int editPost(PostDto postDto, MultipartFile[] attachs) {
+    @Transactional
+    public int editPost(PostDto postDto, MultipartFile[] attachs, HttpServletRequest request) {
         int rows = postMapper.updatePost(postDto);
         // 나중에 파일 삭제 및 업로드 추가 예정
+
+        // 로그 저장
+        PostActionLogDto postActionLog = PostActionLogDto.builder()
+                .postId(postDto.getId())
+                .userId(postDto.getUserId())
+                .actionType(ActionType.UPDATE)
+                .ipAddress(request.getRemoteAddr())
+                .userAgent(request.getHeader("User-Agent"))
+                .status(BatchStatus.PENDING)
+                .build();
+
+        postActionLogService.recordPostAction(postActionLog);
+
         return rows;
     }
 
     @Override
-    public int deletePost(long id) {
+    @Transactional
+    public int deletePost(long id, Long userId, HttpServletRequest request) {
         int rows = postMapper.deletePost(id);
         // 나중에 파일 삭제 및 업로드 추가 예정
+
+        // 로그 저장
+        PostActionLogDto postActionLog = PostActionLogDto.builder()
+                .postId(id)
+                .userId(userId)
+                .actionType(ActionType.DELETE)
+                .ipAddress(request.getRemoteAddr())
+                .userAgent(request.getHeader("User-Agent"))
+                .status(BatchStatus.PENDING)
+                .build();
+
+        postActionLogService.recordPostAction(postActionLog);
+
         return rows;
     }
 }

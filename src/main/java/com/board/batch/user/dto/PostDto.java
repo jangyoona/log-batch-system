@@ -12,6 +12,7 @@ public class PostDto {
 
     private Long id;
 
+    private Long userId;
     private String userName;
     private String title;
     private String content;

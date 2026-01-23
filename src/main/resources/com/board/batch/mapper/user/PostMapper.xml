@@ -7,6 +7,7 @@
 
     <resultMap id="postResultMap" type="PostDto">
         <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
         <result property="userName" column="user_name"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
@@ -33,6 +34,7 @@
     <select id="getPosts" parameterType="SearchCondition" resultMap="postResultMap">
         SELECT
             id,
+            user_id,
             user_name,
             title,
             content,
@@ -66,6 +68,7 @@
     <select id="getPostById" parameterType="long" resultMap="postResultMap">
         SELECT
             id,
+            user_id,
             user_name,
             title,
             content,
@@ -79,8 +82,8 @@
     </select>
 
     <insert id="insertPost" parameterType="PostDto" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO posts (user_name, title, content)
-        VALUES (#{userName}, #{title}, #{content})
+        INSERT INTO posts (user_id, user_name, title, content)
+        VALUES (#{userId}, #{userName}, #{title}, #{content})
     </insert>
 
     <insert id="insertPostAttachments" parameterType="PostAttachmentsDto" useGeneratedKeys="true" keyProperty="id">
@@ -99,7 +102,9 @@
     </update>
 
     <delete id="deletePost" parameterType="long">
-        DELETE FROM posts
+        UPDATE posts
+        SET
+            active = false
         WHERE
             id = #{id}
     </delete>

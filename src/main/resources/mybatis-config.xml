@@ -5,6 +5,11 @@
 
 <configuration>
 
+    <!-- Use EnumTypeHandler as the global default for all enums -->
+<!--    <settings>-->
+<!--        <setting name="defaultEnumTypeHandler" value="org.apache.ibatis.type.EnumTypeHandler"/>-->
+<!--    </settings>-->
+
     <typeAliases>
         <typeAlias type="com.board.batch.common.dto.UserDto" alias="UserDto" />
         <typeAlias type="com.board.batch.common.dto.RoleDto" alias="RoleDto" />
@@ -13,12 +18,15 @@
         <typeAlias type="com.board.batch.user.dto.PostAttachments" alias="PostAttachmentsDto" />
         <typeAlias type="com.board.batch.common.dto.SearchCondition" alias="SearchCondition" />
 
+        <typeAlias type="com.board.batch.user.dto.PostActionLogDto" alias="PostActionLogDto" />
+
     </typeAliases>
 
     <mappers>
         <mapper resource="com/board/batch/mapper/common/UserMapper.xml" />
 
         <mapper resource="com/board/batch/mapper/user/PostMapper.xml" />
+        <mapper resource="com/board/batch/mapper/user/PostActionLogMapper.xml" />
     </mappers>
 
 </configuration>
