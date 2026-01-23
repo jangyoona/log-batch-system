@@ -11,22 +11,22 @@
 <!--    </settings>-->
 
     <typeAliases>
-        <typeAlias type="com.board.batch.common.dto.UserDto" alias="UserDto" />
-        <typeAlias type="com.board.batch.common.dto.RoleDto" alias="RoleDto" />
+        <typeAlias type="com.log.batch.user.dto.UserDto" alias="UserDto" />
+        <typeAlias type="com.log.batch.user.dto.RoleDto" alias="RoleDto" />
 
-        <typeAlias type="com.board.batch.user.dto.PostDto" alias="PostDto" />
-        <typeAlias type="com.board.batch.user.dto.PostAttachments" alias="PostAttachmentsDto" />
-        <typeAlias type="com.board.batch.common.dto.SearchCondition" alias="SearchCondition" />
+        <typeAlias type="com.log.batch.post.dto.PostDto" alias="PostDto" />
+        <typeAlias type="com.log.batch.post.dto.PostAttachments" alias="PostAttachmentsDto" />
+        <typeAlias type="com.log.batch.post.dto.SearchCondition" alias="SearchCondition" />
 
-        <typeAlias type="com.board.batch.user.dto.PostActionLogDto" alias="PostActionLogDto" />
+        <typeAlias type="com.log.batch.actionlog.dto.PostActionLogDto" alias="PostActionLogDto" />
 
     </typeAliases>
 
     <mappers>
-        <mapper resource="com/board/batch/mapper/common/UserMapper.xml" />
+        <mapper resource="com/log/batch/mapper/user/UserMapper.xml" />
 
-        <mapper resource="com/board/batch/mapper/user/PostMapper.xml" />
-        <mapper resource="com/board/batch/mapper/user/PostActionLogMapper.xml" />
+        <mapper resource="com/log/batch/mapper/post/PostMapper.xml" />
+        <mapper resource="com/log/batch/mapper/post/PostActionLogMapper.xml" />
     </mappers>
 
 </configuration>
