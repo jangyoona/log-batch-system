@@ -17,6 +17,13 @@ spring:
     connection-test-query: ${TEST_QUERY}
     type: org.springframework.jdbc.datasource.DriverManagerDataSource
 
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always # 메타테이블 자동 생성 (개발용)
+#      initialize-schema: never # 메타테이블 DDL 안씀
+
   servlet:
     multipart:
       max-file-size: 10MB

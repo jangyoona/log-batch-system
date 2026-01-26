@@ -43,6 +43,10 @@ dependencies {
 	// DB log
 	runtimeOnly 'p6spy:p6spy:3.9.1'
 
+	// batch
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.springframework.batch:spring-batch-infrastructure'
+
 	// aop
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 

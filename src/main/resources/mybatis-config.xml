@@ -19,6 +19,7 @@
         <typeAlias type="com.log.batch.post.dto.SearchCondition" alias="SearchCondition" />
 
         <typeAlias type="com.log.batch.actionlog.dto.PostActionLogDto" alias="PostActionLogDto" />
+        <typeAlias type="com.log.batch.actionlog.dto.PostActionLogDailyStatusDto" alias="PostActionLogDailyStatusDto" />
 
     </typeAliases>
 
@@ -26,7 +27,8 @@
         <mapper resource="com/log/batch/mapper/user/UserMapper.xml" />
 
         <mapper resource="com/log/batch/mapper/post/PostMapper.xml" />
-        <mapper resource="com/log/batch/mapper/post/PostActionLogMapper.xml" />
+        <mapper resource="com/log/batch/mapper/actionlog/PostActionLogMapper.xml" />
+        <mapper resource="com/log/batch/mapper/actionlog/PostActionLogBatchMapper.xml" />
     </mappers>
 
 </configuration>
